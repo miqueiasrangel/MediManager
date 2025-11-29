@@ -8,7 +8,7 @@ export default function App() {
 
   return (
     <div className="container">
-      <h1>MediMananger</h1>
+      <h1>MediManager</h1>
 
       <div className="menu">
         <button onClick={() => setView("lista")}>Lista de Produtos</button>
