@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const sheets = require('../googleSheets');
 
-// Helpers
 function agoraFormatadoBR(date = new Date()) {
   const dia = String(date.getDate()).padStart(2, '0');
   const mes = String(date.getMonth() + 1).padStart(2, '0');
@@ -12,8 +11,6 @@ function agoraFormatadoBR(date = new Date()) {
   return `${dia}/${mes}/${ano} ${hora}:${min}`;
 }
 
-// Gera próximo id PROD### com base nos ids existentes (PROD001 ...)
-// Recebe array de linhas (cada linha é array de colunas), onde coluna A (index 0) é id_produto
 function gerarProximoId(linhas) {
   let max = 0;
   linhas.forEach(row => {
@@ -28,7 +25,6 @@ function gerarProximoId(linhas) {
   return `PROD${proximo}`;
 }
 
-// Mapear linha (array) para objeto
 function linhaParaObjeto(row) {
   return {
     id_produto: row[0] || '',
@@ -43,7 +39,6 @@ function linhaParaObjeto(row) {
   };
 }
 
-// GET /api/produtos -> lista todos
 router.get('/', async (req, res) => {
   try {
     const linhas = await sheets.lerTodasLinhas();
@@ -55,7 +50,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/produtos/:id -> obter produto específico
 router.get('/:id', async (req, res) => {
   try {
     const id = req.params.id;
@@ -70,8 +64,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST /api/produtos -> cadastrar novo produto
-// body: { nome_produto, categoria, quantidade_inicial }
 router.post('/', async (req, res) => {
   try {
     const { nome_produto, categoria = '', quantidade_inicial = 0 } = req.body;
@@ -87,11 +79,11 @@ router.post('/', async (req, res) => {
       nome_produto,
       categoria,
       Number(quantidade_inicial),
-      agora,                // ultima_movimentacao
-      'Cadastro inicial',   // tipo_movimentacao
-      Number(quantidade_inicial), // quantidade_movimentada
-      agora,                // criado_em
-      agora                 // atualizado_em
+      agora,                
+      'Cadastro inicial',   
+      Number(quantidade_inicial), 
+      agora,               
+      agora            
     ];
 
     await sheets.adicionarLinha(linha);
@@ -102,7 +94,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT /api/produtos/:id/entrada  body: { quantidade, criado_por(optional) }
 router.put('/:id/entrada', async (req, res) => {
   try {
     const id = req.params.id;
@@ -117,8 +108,6 @@ router.put('/:id/entrada', async (req, res) => {
     const agora = agoraFormatadoBR();
 
     if (index === -1) {
-      // cria produto novo com quantidade inicial = quantidade
-      // nome_produto desconhecido aqui — vamos usar id como nome provisório (você pode depois editar)
       const nomeProvisorio = id;
       const linha = [
         id,
@@ -134,21 +123,20 @@ router.put('/:id/entrada', async (req, res) => {
       await sheets.adicionarLinha(linha);
       return res.json({ status: 'ok', message: 'Produto criado e estoque atualizado' });
     } else {
-      // atualiza a linha existente
       const row = linhas[index];
       const atualQuantidade = Number(row[3] || 0);
       const novaQuantidade = atualQuantidade + q;
 
       const novaLinha = [
-        row[0] || id,           // id_produto
-        row[1] || '',           // nome_produto
-        row[2] || '',           // categoria
-        novaQuantidade,         // quantidade
-        agora,                  // ultima_movimentacao
-        'Entrada',              // tipo_movimentacao
-        q,                      // quantidade_movimentada (última)
-        row[7] || row[7] || '', // criado_em (mantém)
-        agora                   // atualizado_em
+        row[0] || id,           
+        row[1] || '',          
+        row[2] || '',           
+        novaQuantidade,         
+        agora,                  
+        'Entrada',            
+        q,                    
+        row[7] || row[7] || '', 
+        agora                   
       ];
       await sheets.atualizarLinhaPorIndex(index, novaLinha);
       return res.json({ status: 'ok', message: 'Estoque atualizado' });
@@ -159,8 +147,6 @@ router.put('/:id/entrada', async (req, res) => {
   }
 });
 
-// PUT /api/produtos/:id/saida  body: { quantidade, criado_por(optional) }
-// quantidade >0 (será subtraída)
 router.put('/:id/saida', async (req, res) => {
   try {
     const id = req.params.id;
@@ -189,8 +175,8 @@ router.put('/:id/saida', async (req, res) => {
         novaQuantidade,
         agora,
         'Saída',
-        -q,           // registra negativo para indicar saída
-        row[7] || '', // criado_em permanece
+        -q,           
+        row[7] || '', 
         agora
       ];
       await sheets.atualizarLinhaPorIndex(index, novaLinha);

@@ -4,7 +4,6 @@ const path = require('path');
 const SPREADSHEET_ID = process.env.ID_PLANILHA;
 const ABA = process.env.ABA || 'estoque';
 
-// Autenticação via Service Account (arquivo credentials.json na pasta raiz do servidor)
 const auth = new google.auth.GoogleAuth({
   keyFile: path.join(__dirname, '..', '..', 'credentials.json'),
   scopes: ['https://www.googleapis.com/auth/spreadsheets'],
@@ -15,10 +14,9 @@ async function getSheetsClient() {
   return google.sheets({ version: 'v4', auth: client });
 }
 
-// Ler todas as linhas (exceto cabeçalho) - retorna array de arrays
 async function lerTodasLinhas() {
   const sheets = await getSheetsClient();
-  const range = `${ABA}!A2:I`; // colunas A..I correspondem às 9 colunas do layout
+  const range = `${ABA}!A2:I`; 
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
     range,
@@ -26,7 +24,6 @@ async function lerTodasLinhas() {
   return res.data.values || [];
 }
 
-// Adicionar nova linha (append)
 async function adicionarLinha(linha) {
   const sheets = await getSheetsClient();
   const range = `${ABA}!A2:I`;
@@ -38,11 +35,9 @@ async function adicionarLinha(linha) {
   });
 }
 
-// Atualizar linha específica (linhaIndex é 0-based dentro do resultado de lerTodasLinhas())
-// para a planilha, precisamos enviar range começando em A{n} até I{n}
 async function atualizarLinhaPorIndex(linhaIndex, valoresLinha) {
   const sheets = await getSheetsClient();
-  const planilhaRowNumber = 2 + linhaIndex; // porque A2 é índice 0
+  const planilhaRowNumber = 2 + linhaIndex;
   const range = `${ABA}!A${planilhaRowNumber}:I${planilhaRowNumber}`;
   await sheets.spreadsheets.values.update({
     spreadsheetId: SPREADSHEET_ID,

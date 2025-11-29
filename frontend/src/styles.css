@@ -1,4 +1,3 @@
-/* === RESET BÁSICO === */
 * {
   margin: 0;
   padding: 0;
@@ -11,15 +10,13 @@ body {
   padding: 20px;
   color: #222;
   width: 100%;
-  display: block; /* IMPORTANTE */
+  display: block; 
 }
 
-
-/* === CONTAINER PRINCIPAL === */
 .container {
-  width: 95%; /* ocupa quase a tela inteira */
-  max-width: 1600px; /* limite para monitores grandes */
-  margin: 0 auto; /* centra corretamente */
+  width: 95%; 
+  max-width: 1600px;
+  margin: 0 auto; 
   background: #ffffff;
   padding: 30px;
   border-radius: 12px;
@@ -28,13 +25,12 @@ body {
 
 
 
-/* === TÍTULOS === */
 h1 {
   text-align: center;
   margin-bottom: 25px;
   font-size: 68px;
   font-weight: 700;
-  color: #1f3c88; /* azul bonito */
+  color: #1f3c88;
 }
 
 h2 {
@@ -43,7 +39,6 @@ h2 {
   color: #1f3c88;
 }
 
-/* === MENU === */
 .menu {
   display: flex;
   justify-content: center;
@@ -66,7 +61,6 @@ h2 {
   background: #16316a;
 }
 
-/* === LISTA DE PRODUTOS === */
 .lista-produtos {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
@@ -74,8 +68,6 @@ h2 {
   margin-top: 25px;
 }
 
-
-/* === CARD DO PRODUTO === */
 .card {
   background: #ffffff;
   border-radius: 12px;
@@ -100,7 +92,6 @@ h2 {
   color: #444;
 }
 
-/* === AÇÕES DO CARD === */
 .acoes button {
   margin-right: 8px;
   padding: 8px 14px;
@@ -112,7 +103,7 @@ h2 {
 }
 
 .acoes button:first-child {
-  background: #28a745; /* verde */
+  background: #28a745; 
 }
 
 .acoes button:first-child:hover {
@@ -120,14 +111,13 @@ h2 {
 }
 
 .acoes button:last-child {
-  background: #dc3545; /* vermelho */
+  background: #dc3545; 
 }
 
 .acoes button:last-child:hover {
   background: #b02a37;
 }
 
-/* === FORMULÁRIOS === */
 .form {
   display: flex;
   flex-direction: column;
@@ -157,7 +147,6 @@ h2 {
   background: #16316a;
 }
 
-/* === MODAL === */
 .modal {
   background: #fff;
   padding: 25px;
